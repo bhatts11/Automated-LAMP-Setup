@@ -1,0 +1,49 @@
+---
+- name: Install all required packages
+  hosts: all
+  remote_user: ansible-user
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Install latest version of below packages.
+    dnf:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - httpd
+      - php
+      - php-mysqlnd
+      - php-gd
+      - php-xml
+      - mariadb-server
+      - mariadb
+      - php-mbstring
+      - php-json
+      - mod_ssl
+      - php-intl
+      - php-apcu
+  - name: Enable these installed services to start on boot up.
+    service:
+      name: "{{ item }}"
+      state: started
+    loop:
+      - httpd
+      - mariadb
+  - name: Create firewall rule for apache service
+    firewalld:
+      service: http
+      zone: public
+      permanent: yes
+      immediate: yes
+      state: enabled
+  - name: Create firewall rule for apache service
+    firewalld:
+      service: https
+      zone: public
+      permanent: yes
+      immediate: yes
+      state: enabled	  
+  - name: Restart service httpd, in all cases
+    service:
+      name: httpd
+      state: restarted

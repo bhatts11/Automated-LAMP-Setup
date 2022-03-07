@@ -1,0 +1,14 @@
+---
+- name: Install all required packages
+  hosts: all
+  remote_user: ansible-user
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: Restart these services to ensure changes take affect.
+    service:
+      name: "{{ item }}"
+      state: restarted
+    loop:
+      - httpd
+      - mariadb

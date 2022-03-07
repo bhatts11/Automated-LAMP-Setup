@@ -1,0 +1,40 @@
+---
+- name: Download MediaWiki files from wikimedia.org
+  hosts: all
+  remote_user: ansible-user
+  become: yes
+  gather_facts: no
+  tasks:
+   - name: Download MediaWiki using get_url
+     become: yes
+     get_url:
+       url: https://releases.wikimedia.org/mediawiki/1.37/mediawiki-1.37.1.tar.gz
+       dest: /var/www
+   - name: Unarchive the downloaded MediaWorks file
+     unarchive:
+       src: /var/www/mediawiki-1.37.1.tar.gz
+       dest: /var/www/
+       remote_src: yes
+       owner: apache
+       group: apache       
+   - name: Create symbolic link as per the guideline
+     file:
+      src: "/var/www/mediawiki-1.37.1.tar.gz"
+      dest: "/var/www/mediawiki"
+      state: link
+   - name: Apply new SELinux file context to filesystem
+     ansible.builtin.command: restorecon -FR /var/www/mediawiki-1.37.1/
+   - name: Apply new SELinux file context to filesystem
+     ansible.builtin.command: restorecon -FR /var/www/mediawiki
+   - name: replace line
+     lineinfile: 
+      path: /etc/httpd/conf/httpd.conf 
+      regexp: '^(.*)DocumentRoot "/var/www"$' 
+      line: 'DocumentRoot "/var/www/mediaworks"'
+      backrefs: yes
+   - name: replace line
+     lineinfile: 
+      path: /etc/httpd/conf/httpd.conf 
+      regexp: '^(.*)DirectoryIndex index.html$' 
+      line: 'DirectoryIndex index.html index.html.var index.php'
+      backrefs: yes
