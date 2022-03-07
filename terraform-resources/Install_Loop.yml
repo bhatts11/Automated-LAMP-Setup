@@ -22,6 +22,7 @@
       - mod_ssl
       - php-intl
       - php-apcu
+      - python3-mysqldb
   - name: Enable these installed services to start on boot up.
     service:
       name: "{{ item }}"
