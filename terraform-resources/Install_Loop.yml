@@ -23,6 +23,9 @@
       - php-intl
       - php-apcu
       - python3-mysqldb
+  - name: Install bottle python package
+    pip:
+      name: pymysql
   - name: Enable these installed services to start on boot up.
     service:
       name: "{{ item }}"
