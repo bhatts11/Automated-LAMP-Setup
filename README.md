@@ -16,9 +16,17 @@
 
 ### **Usage :**
 
-***terraform-resources*** directory contains the actual terraform and ansible code. ***terraform-modules*** directory is used to write or define terraform modules. Which means you will be dealing with only *terraform-resources* folder most of the times.
+***terraform-resources*** directory contains the actual terraform and ansible code. ***terraform-modules*** directory is used to write or define terraform modules. Which means you will be dealing with only *terraform-resources* folder most of the times. All the files I explain further are under ***terraform-resources*** unless otherwise mentioned.
 
-**Things to keep in mind are :**
+* ***main.tf*** -> Main terraform file, that will eventually call required terraform modules defined in *module* section. You have to configure backend configuration in this file.
+* ***terraform.tfvars*** -> Terraform Variable input file. Update all the variable values in the file before initiating the deployment.
+* ***Install_Loop.yml*** -> Ansible playbook to define the packages we want to be installed. This playbook also has the firewall configuration and rules.
+* ***mysql_secure*** -> Ansible playbook to setup mysql secure installation and make all the required changes regarding new database, user.
+* ***apacheconfig.yml*** -> Ansible playbook to make Apache configuration changes. This includes downloading or editing any config files.
+* ***restart_services.yml*** -> Ansible playbook to restart any service required to ensure changes are implemented.
+
+
+### **Prerequisites :**
 
 1. We are using Azure BLOB as backend configuration, so you need to ensure the storage account and container mentioned in the backend configuration exists. This is updated under backend section of main.tf file located in terraform-resources directory.
 2. To ensure this configuration is secure. We are using Key Vault to store all our sensitive information. Since we are using data block to fetch key vault secrets, where we store all our sensitive information. The key vault and the secrets should already exist.
@@ -29,7 +37,9 @@
 
 3. This deployment is using password authentication. In case you plan on using SSH keys, you need to edit line 67 to 74 on \terraform-modules\virtual_machine\main.tf and uncomment line 74 . I am using Password authentication to demonstrate how data block can be used to securely fetch username and password from keyvault. We can use [File function](https://www.terraform.io/language/functions/file "File Terraform") to specify our private key location.
 4. We are using Terraform modules and variables to ensure this code is scalable. Before you start the deployment you need to update the required values in ***"terraform.tfvars"*** file under terraform-resources folder. If you aren't sure about the expected values. You can hover your mouse on the value to find out the description. Reference image below :
+
 ![](hover.png)
+
 5. I have used conditionals in the terraform variables file to ensure we are performing error handling. You can edit or modify these conditionals if you have any specific custom requirements.
 5. **Install_Loop.yaml** file contains the list of packages which needs to be installed. If you are planning to install anything additional. Just append the list and loop will take care of the setup.
 
