@@ -2,7 +2,7 @@
 terraform {
   backend "azurerm" {
     #   subscription_id       = "da74xxxx-9c9a-xxxx-8fae-xxxxxxxxxxxx"
-    subscription_id      = "e58693ac-b883-4b6f-ba62-6fea36efcf2b"
+    subscription_id      = "da74xxxx-9c9a-xxxx-8fae-xxxxxxxxxxx"
     resource_group_name  = "ThoughtWorks"
     storage_account_name = "thoughtworksmedia" # Storage account used for backend
     container_name       = "terraformstate"
